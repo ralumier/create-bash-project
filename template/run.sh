@@ -22,6 +22,11 @@ shopt -s expand_aliases
 alias myfile='realpath ${BASH_SOURCE[0]}';
 alias mypath='dirname $(myfile)';
 
+declare ___PROJECT_PATH="$(mypath)";
+declare ___PROJECT_FILE="$(myfile)";
+
+declare ___PROJECT_NAME=;
+
 declare ___MODULES_PATHS=("$(mypath)" "$(mypath)/src" "$(mypath)/lib");
 declare ___MODULES_DEFAULTS=('main' 'defaut' 'index');
 declare -A ___MODULES_LOADED=([$(myfile)]=loaded);
@@ -88,6 +93,18 @@ function include() {
     done
 }
 
-include 'main';
+function install() {
+    local target=${1:-"${HOME}/.local/bin"}
+    local owd=$(pwd);
 
-main;
+    cd "${target}";    
+    ln -sv "${___PROJECT_FILE}" "${___PROJECT_NAME:-$(basename ${___PROJECT_PATH})}";
+    cd "${owd}";
+}
+
+if [[ "${INSTALL}" == "true" ]]; then
+    install "$@";
+else
+    include 'main';
+    main "$@";
+fi

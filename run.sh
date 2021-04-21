@@ -22,6 +22,11 @@ shopt -s expand_aliases
 alias myfile='realpath ${BASH_SOURCE[0]}';
 alias mypath='dirname $(myfile)';
 
+declare ___PROJECT_PATH="$(mypath)";
+declare ___PROJECT_FILE="$(myfile)";
+
+declare ___PROJECT_NAME=;
+
 declare ___MODULES_PATHS=("$(mypath)/template/src" "$(mypath)/template/lib");
 declare ___MODULES_DEFAULTS=('main' 'defaut' 'index');
 declare -A ___MODULES_LOADED=([$(myfile)]=loaded);
@@ -88,6 +93,15 @@ function include() {
     done
 }
 
+function install() {
+    local target=${1:-"${HOME}/.local/bin"}
+    local owd=$(pwd);
+
+    cd "${target}";    
+    ln -sv "${___PROJECT_FILE}" "${___PROJECT_NAME:-$(basename ${___PROJECT_PATH})}";
+    cd "${owd}";
+}
+
 function header() {
     PS="$(ywb)" print "** create-bash-project v1.0.0 **"
 }
@@ -95,8 +109,7 @@ function header() {
 function main() {
     include 'console/*';
         
-    local path=$(mypath);
-    local file=$(myfile);
+    local path=${___PROJECT_PATH};
 
     if [[ "${1}" == '--install' ]]; then
         local target=${2:-"${HOME}/.local/bin"}
@@ -124,4 +137,8 @@ function main() {
     fi
 }
 
-main "$@";
+if [[ "${INSTALL}" == "true" ]]; then
+    install "$@";
+else    
+    main "$@";
+fi
