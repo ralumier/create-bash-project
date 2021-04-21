@@ -26,6 +26,7 @@ declare ___PROJECT_PATH="$(mypath)";
 declare ___PROJECT_FILE="$(myfile)";
 
 declare ___PROJECT_NAME=;
+declare ___PROJECT_VERSION="0.0.0";
 
 declare ___MODULES_PATHS=("$(mypath)" "$(mypath)/src" "$(mypath)/lib");
 declare ___MODULES_DEFAULTS=('main' 'defaut' 'index');

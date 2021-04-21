@@ -22,10 +22,11 @@ shopt -s expand_aliases
 alias myfile='realpath ${BASH_SOURCE[0]}';
 alias mypath='dirname $(myfile)';
 
+declare ___PROJECT_NAME="create-bash-project";
+declare ___PROJECT_VERSION="1.0.1";
+
 declare ___PROJECT_PATH="$(mypath)";
 declare ___PROJECT_FILE="$(myfile)";
-
-declare ___PROJECT_NAME=;
 
 declare ___MODULES_PATHS=("$(mypath)/template/src" "$(mypath)/template/lib");
 declare ___MODULES_DEFAULTS=('main' 'defaut' 'index');
@@ -103,7 +104,7 @@ function install() {
 }
 
 function header() {
-    PS="$(ywb)" print "** create-bash-project v1.0.0 **"
+    PS="$(ywb)" print "** ${___PROJECT_NAME} v${___PROJECT_VERSION} **"
 }
 
 function main() {
@@ -111,16 +112,11 @@ function main() {
         
     local path=${___PROJECT_PATH};
 
-    if [[ "${1}" == '--install' ]]; then
-        local target=${2:-"${HOME}/.local/bin"}
-        local owd=$(pwd);
-
-        cd "${target}";    
-        ln -sv ${file} 'create-bash-project'
-        cd "${owd}";
-
-    elif [[ "${1}" == "--version" ]]; then
+    if [[ "${1}" == "--version" ]]; then
         header;
+
+    elif [[ "${1}" == "--inplace" ]]; then
+        cp -Rv ${path}/template/* .;
     else
         header;
 
